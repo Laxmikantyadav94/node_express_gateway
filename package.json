@@ -1,0 +1,13 @@
+{
+  "name": "my-gateway",
+  "description": "Express Gateway Instance Bootstraped from Command Line",
+  "repository": {},
+  "license": "UNLICENSED",
+  "version": "1.0.0",
+  "scripts": {
+    "install:service1": "cd Gateway/service1 && npm install",
+    "install:service2": "cd Gateway/service2 && npm install ",
+    "install:gateway": "cd Gateway/my-gateway && npm install",
+    "postinstall": "npm run install:service1 && npm run install:service2 && npm run install:gateway"
+  }
+}
