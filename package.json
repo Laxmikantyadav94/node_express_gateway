@@ -5,9 +5,16 @@
   "license": "UNLICENSED",
   "version": "1.0.0",
   "scripts": {
-    "install:service1": "cd Gateway/service1 && npm install",
-    "install:service2": "cd Gateway/service2 && npm install ",
-    "install:gateway": "cd Gateway/my-gateway && npm install",
-    "postinstall": "npm run install:service1 && npm run install:service2 && npm run install:gateway"
+    "install:service1": "cd service1 && npm install && cd ../",
+    "install:service2": "cd service2 && npm install && cd ../",
+    "install:gateway": "cd my-gateway && npm install",
+    "postinstall": "npm run install:service1 && npm run install:service2 && npm run install:gateway",
+    "start:service1": "node service1/index.js",
+    "start:service2": "node service2/index.js",
+    "start:gateway": "node my-gateway/server.js",
+    "start": "npm-run-all --parallel start:service1 start:service2 start:gateway"
+  },
+  "devDependencies": {
+    "npm-run-all": "4.1.5"
   }
 }
