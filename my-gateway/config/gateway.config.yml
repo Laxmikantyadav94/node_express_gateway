@@ -13,16 +13,25 @@ apiEndpoints:
   service2API:
     host: '*'
     paths: '/service2/*'
+  oauthProtectedAPI:
+    host: '*'
+    paths: '/oauth2Protected'
+  externaljwtAPI:
+    host: '*'
+    paths: '/externaljwt'
 serviceEndpoints:
   ipService:
     url: 'https://httpbin.org'
-  service1:
-    url: 'http://localhost:9001'
+  service1: # load balancing with round robin strategy 
+    urls:
+      - 'http://localhost:9001'
+      - 'http://localhost:9004'
   service2:
-    url: 'http://localhost:9002'
+    url: 'http://localhost:9003'
 policies:
   - rewrite
   - basic-auth
+  - jwt
   - cors
   - expression
   - key-auth
@@ -55,19 +64,13 @@ pipelines:
       - service1API
     policies:
     # - key-auth:
-    # rate-limit will allow only 2 request in 10 sec. Default oh windowMs in 1 minute.
       - rewrite:
         - 
           condition:
             name: regexpmatch
             match: ^/service1/?(.*)$
           action:
-            rewrite: /$1 
-      - rate-limit:
-        - action:
-            max: 2
-            windowMs: 10000
-            rateLimitBy: ${req.ip}"
+            rewrite: /$1
       - proxy:
           - action:
               serviceEndpoint: service1 
@@ -83,7 +86,54 @@ pipelines:
             match: ^/service2/?(.*)$
           action:
             rewrite: /$1 
+      - rate-limit:
+        - action:
+            max: 2
+            windowMs: 10000
+            rateLimitBy: ${req.ip}"
       - proxy:
         - action:
             serviceEndpoint: service2
             changeOrigin: true
+  - name: externaljwt
+    apiEndpoints:
+      - externaljwtAPI
+    policies:
+      - jwt:
+        - action:
+            secretOrPublicKeyFile: my-gateway/pubKey.pem # generated from auth0
+            checkCredentialExistence: false
+      - proxy:
+        - action:
+            serviceEndpoint: ipService
+            changeOrigin: true
+            proxyOptions:
+              prependPath: true
+              ignorePath: true
+              secure: false
+  - name: oauth2Protected
+    apiEndpoints:
+      - oauthProtectedAPI
+    policies:
+      - oauth2:
+      - response-transformer:
+        - action:
+            body:
+              add:
+                newKey: "'added user in headers'"
+                # user: req.user
+            headers: #Adds the requesting user details in response.
+              add:
+                user: req.user
+                hostname: req.hostname
+      - proxy:
+        - action:
+            serviceEndpoint: ipService
+            changeOrigin: true
+            proxyOptions:
+              prependPath: true
+              ignorePath: true
+              secure: false
+
+
+

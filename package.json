@@ -6,15 +6,22 @@
   "version": "1.0.0",
   "scripts": {
     "install:service1": "cd service1 && npm install && cd ../",
+    "install:service1_copy": "cd service1_copy && npm install && cd ../",
     "install:service2": "cd service2 && npm install && cd ../",
     "install:gateway": "cd my-gateway && npm install",
-    "postinstall": "npm run install:service1 && npm run install:service2 && npm run install:gateway",
+    "postinstall": "npm run install:service1 && npm run install:service1_copy && npm run install:service2 && npm run install:gateway",
     "start:service1": "node service1/index.js",
+    "start:service1_copy": "node service1_copy/index.js",
     "start:service2": "node service2/index.js",
     "start:gateway": "node my-gateway/server.js",
-    "start": "npm-run-all --parallel start:service1 start:service2 start:gateway"
+    "start": "npm-run-all --parallel start:service1 start:service1_copy start:service2 start:gateway"
   },
   "devDependencies": {
     "npm-run-all": "4.1.5"
+  },
+  "dependencies": {
+    "console.table": "0.10.0",
+    "convert": "0.2.3-canary",
+    "njwt": "1.0.0"
   }
 }
