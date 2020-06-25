@@ -10,7 +10,7 @@ This repo shows some basic features of Node Express gateways. Features Involved 
  - jwt verification
  - oauth2 (refer ./oauth2_express_gateway.docx for more explanation)
  
- [](./oauth2_express_gateway.docx)
+ [ducument](./oauth2_express_gateway.docx)
  
  # How_To_Run
  
