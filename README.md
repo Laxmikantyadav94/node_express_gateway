@@ -8,7 +8,7 @@ This repo shows some basic features of Node Express gateways. Features Involved 
  - rewrite
  - load balancing (round-robin approch)
  - jwt verification
- - oauth2 (refer oauth2_express_gateway.docx for more explanation)
+ - oauth2 (refer ./oauth2_express_gateway.docx for more explanation)
  
  
  # How_To_Run
